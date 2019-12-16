@@ -24,7 +24,7 @@ module Fastlane
 
         password = params[:password]
         if password.nil?
-          password = ""
+          UI.user_error!("You have to provide a password")
         end
 
         update_description = params[:update_description]
@@ -34,7 +34,7 @@ module Fastlane
 
         install_type = params[:install_type]
         if install_type.nil?
-          install_type = "1"
+          install_type = "2"
         end
 
         # start upload
@@ -70,7 +70,7 @@ module Fastlane
           UI.user_error!("PGYER Plugin Error: #{info['message']}")
         end
 
-        UI.success "Upload success. Visit this URL to see: https://www.pgyer.com/#{info['data']['appShortcutUrl']}"
+        UI.success " Upload success. Visit this URL to see: https://www.pgyer.com/#{info['data']['buildShortcutUrl']} "
       end
 
       def self.description
