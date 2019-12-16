@@ -7,9 +7,9 @@ module Fastlane
       def self.run(params)
         UI.message("The pgyer plugin is working.")
 
-        api_host = "http://qiniu-storage.pgyer.com/apiv1/app/upload"
+        api_host = "https://www.pgyer.com/apiv2/app/upload"
         api_key = params[:api_key]
-        user_key = params[:user_key]
+        channel_shortcut = params[:channel_shortcut]
 
         build_file = [
           params[:ipa],
@@ -54,10 +54,10 @@ module Fastlane
 
         params = {
             '_api_key' => api_key,
-            'uKey' => user_key,
-            'password' => password,
-            'updateDescription' => update_description,
-            'installType' => install_type,
+            'buildChannelShortcut' => channel_shortcut,
+            'buildPassword' => password,
+            'buildUpdateDescription' => update_description,
+            'buildInstallType' => install_type,
             'file' => Faraday::UploadIO.new(build_file, 'application/octet-stream')
         }
 
@@ -97,10 +97,10 @@ module Fastlane
                                description: "api_key in your pgyer account",
                                   optional: false,
                                       type: String),
-          FastlaneCore::ConfigItem.new(key: :user_key,
-                                  env_name: "PGYER_USER_KEY",
-                               description: "user_key in your pgyer account",
-                                  optional: false,
+          FastlaneCore::ConfigItem.new(key: :channel_shortcut,
+                                  env_name: "PGYER_CHANNEL_SHORTCUT",
+                               description: "(选填)所需更新的指定渠道的下载短链接，只可指定一个渠道，字符串型，如：abcd",
+                                  optional: true,
                                       type: String),
           FastlaneCore::ConfigItem.new(key: :apk,
                                        env_name: "PGYER_APK",
@@ -128,19 +128,19 @@ module Fastlane
                                        end),
           FastlaneCore::ConfigItem.new(key: :password,
                                   env_name: "PGYER_PASSWORD",
-                               description: "set password to protect app",
-                                  optional: true,
+                               description: "(必填) 设置App安装密码",
+                                  optional: false,
                                       type: String),
           FastlaneCore::ConfigItem.new(key: :update_description,
                                   env_name: "PGYER_UPDATE_DESCRIPTION",
-                               description: "set update description for app",
+                               description: "(选填) 版本更新描述，请传空字符串，或不传。",
                                   optional: true,
                                       type: String),
           FastlaneCore::ConfigItem.new(key: :install_type,
                                   env_name: "PGYER_INSTALL_TYPE",
-                               description: "set install type for app (1=public, 2=password, 3=invite). Please set as a string",
-                                  optional: true,
-                                      type: String)
+                               description: "(必填)应用安装方式，值为(2,3)。2：密码安装，3：邀请安装. Please set as a int",
+                                  optional: false,
+                                      type: Integer)
         ]
       end
 
